@@ -56,7 +56,7 @@ class ResourceManagerComm(object):
                     launch_dict["should_resume"] = "0"
                 launch_request = rm_pb2.JsonResponse()
                 launch_request.response = json.dumps(launch_dict)
-                with grpc.insecure_channel(ipaddr) as channel:
+                with grpc.insecure_channel(ipaddr, options=(('grpc.enable_http_proxy', 0),)) as channel:
                     stub = nm_pb2_grpc.NMServerStub(channel)
                     response = stub.LaunchJob(launch_request)
                 print(
@@ -94,7 +94,7 @@ class ResourceManagerComm(object):
                 terminate_request = rm_pb2.JsonResponse()
                 terminate_request.response = json.dumps({"Job_ID": job_id})
                 # TODO: Add simulator
-                with grpc.insecure_channel(ipaddr) as channel:
+                with grpc.insecure_channel(ipaddr, options=(('grpc.enable_http_proxy', 0),)) as channel:
                     stub = nm_pb2_grpc.NMServerStub(channel)
                     response = stub.TerminateJob(terminate_request)
         return None
@@ -124,7 +124,7 @@ class ResourceManagerComm(object):
                 ipaddr = f"{ipaddr}:{self.rpc_port}"
                 metric_request = rm_pb2.JsonResponse()
                 metric_request.response = json.dumps({"Job_ID": job_id})
-                with grpc.insecure_channel(ipaddr) as channel:
+                with grpc.insecure_channel(ipaddr, options=(('grpc.enable_http_proxy', 0),)) as channel:
                     stub = nm_pb2_grpc.NMServerStub(channel)
                     response = stub.GetMetrics(metric_request)
                 metric_data = json.loads(response.response)

@@ -116,7 +116,7 @@ class NodeManagerComm(object):
             request_to_rm.cpuMaping[0] = 0
         # sending the data to insecure channel
         print(self.ipaddr)
-        with grpc.insecure_channel(self.ipaddr) as channel:
+        with grpc.insecure_channel(self.ipaddr, options=(('grpc.enable_http_proxy', 0),)) as channel:
             stub = rm_pb2_grpc.RMServerStub(channel)
             response = stub.RegisterWorker(request_to_rm)
             print(request_to_rm)

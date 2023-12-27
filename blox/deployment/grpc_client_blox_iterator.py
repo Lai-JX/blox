@@ -38,7 +38,7 @@ class BloxIteratorComm(object):
             {"Job_ID": self.jobid, "Iteration": iteration}
         )
         print(lease_request.response)
-        with grpc.insecure_channel(self.node_manager_ip) as channel:
+        with grpc.insecure_channel(self.node_manager_ip, options=(('grpc.enable_http_proxy', 0),)) as channel:
             stub = nm_pb2_grpc.NMServerStub(channel)
             response = stub.GetLease(lease_request)
         return response.value
@@ -53,7 +53,7 @@ class BloxIteratorComm(object):
         metrics_request.response = json.dumps(
             {"Job_ID": self.jobid, "metrics": metrics}
         )
-        with grpc.insecure_channel(self.node_manager_ip) as channel:
+        with grpc.insecure_channel(self.node_manager_ip, options=(('grpc.enable_http_proxy', 0),)) as channel:
             stub = nm_pb2_grpc.NMServerStub(channel)
             response = stub.SetMetrics(metrics_request)
         return response.value
@@ -64,7 +64,7 @@ class BloxIteratorComm(object):
         """
         notify_exit_id = rm_pb2.IntVal()
         notify_exit_id.value = self.jobid
-        with grpc.insecure_channel(self.node_manager_ip) as channel:
+        with grpc.insecure_channel(self.node_manager_ip, options=(('grpc.enable_http_proxy', 0),)) as channel:
             stub = nm_pb2_grpc.NMServerStub(channel)
             response = stub.NotifyTerminate(notify_exit_id)
         return response.value
@@ -79,7 +79,7 @@ class BloxIteratorComm(object):
         job_metrics_id.response = json.dumps(
             {"Job_ID": self.jobid, "metric": metric_to_fetch}
         )
-        with grpc.insecure_channel(self.node_manager_ip) as channel:
+        with grpc.insecure_channel(self.node_manager_ip, options=(('grpc.enable_http_proxy', 0),)) as channel:
             stub = nm_pb2_grpc.NMServerStub(channel)
             response = stub.GetMetricsFromRM(job_metrics_id)
         return json.loads(response.response)

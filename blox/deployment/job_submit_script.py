@@ -34,7 +34,7 @@ def submit_dummy_job(ipaddr: str):
         "simulation": False,
     }
     for i in range(int(sys.argv[1])):
-        with grpc.insecure_channel(ipaddr) as channel:
+        with grpc.insecure_channel(ipaddr, options=(('grpc.enable_http_proxy', 0),)) as channel:
             stub = rm_pb2_grpc.RMServerStub(channel)
             response = stub.AcceptJob(
                 rm_pb2.JsonResponse(response=json.dumps(job_dict))

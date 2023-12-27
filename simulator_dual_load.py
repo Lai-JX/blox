@@ -481,7 +481,7 @@ class SimulatorRunner(simulator_pb2_grpc.SimServerServicer):
             request_to_rm.numCPUcores = self.num_cpu_cores
             request_to_rm.numaAvailable = self.is_numa_available
             request_to_rm.cpuMaping[0] = 0
-            with grpc.insecure_channel(self.ipaddr_rm) as channel:
+            with grpc.insecure_channel(self.ipaddr_rm, options=(('grpc.enable_http_proxy', 0),)) as channel:
                 stub = rm_pb2_grpc.RMServerStub(channel)
                 response = stub.RegisterWorker(request_to_rm)
         print("Number of machines sent {}".format(count))

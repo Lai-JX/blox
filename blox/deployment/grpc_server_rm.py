@@ -115,7 +115,9 @@ class RMServer(rm_pb2_grpc.RMServerServicer):
         """
         dummy_val = rm_pb2.IntVal()
         dummy_val.value = 10
-        with grpc.insecure_channel(f"localhost:{self.simulator_rpc_port}") as channel:
+        print("self.simulator_rpc_port ",self.simulator_rpc_port)
+        # with grpc.insecure_channel(f"localhost:{self.simulator_rpc_port}") as channel:        # 由于使用了代理，需要修改为以下代码
+        with grpc.insecure_channel(f"localhost:{self.simulator_rpc_port}",options=(('grpc.enable_http_proxy', 0),)) as channel:
             stub = sim_pb2_grpc.SimServerStub(channel)
             response = stub.GetConfig(dummy_val)
         new_config = json.loads(response.response)
@@ -131,7 +133,7 @@ class RMServer(rm_pb2_grpc.RMServerServicer):
         sim_time = rm_pb2.IntVal()
         sim_time.value = simulator_time
         # the training starts with
-        options = [("grpc.max_receive_message_length", 10 * 1024 * 1024)]
+        options = [("grpc.max_receive_message_length", 10 * 1024 * 1024),('grpc.enable_http_proxy', 0)]
         # print("Called rpc server")
         with grpc.insecure_channel(
             f"127.0.0.1:{self.simulator_rpc_port}", options=options
